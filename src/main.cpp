@@ -1,11 +1,23 @@
 #include <iostream>
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "glad/glad.h"
+#include "WindowManager.h"
+#include "BasicRenderer.h"
 
 int main() {
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	std::cout << "Hello, world!" << std::endl;
+    auto &windowManager = TDW::WindowManager::shared();
+    if (!windowManager.configureOpenGL(3, 2)) {
+        return -1;
+    }
+
+    auto window = windowManager.presentWindow(800, 600, "MyOpenGL");
+    if (!window) {
+        return -1;
+    }
+    if (!windowManager.initGLAD()) {
+        return -1;
+    }
+    windowManager.addRenderer(new TDW::BasicRenderer());
+    windowManager.runWindowLoop(window);
+    windowManager.terminate();
 }

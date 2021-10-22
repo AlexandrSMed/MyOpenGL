@@ -7,7 +7,10 @@ project(${PROJ_NAME})
 # Source Files Settings
 # =======================================================#
 list(APPEND SOURCE_FILES
-	src/main.cpp)
+	src/main.cpp
+	src/WindowManager.cpp
+	src/BasicRenderer.cpp)
+
 add_executable(${PROJ_NAME} ${SOURCE_FILES})
 # source_group("Source Files\\api" REGULAR_EXPRESSION "src\/api\/.+")
 if (MSVC) 
@@ -19,7 +22,7 @@ add_subdirectory(lib)
 # =======================================================#
 # Compiler Settings
 # =======================================================#
-target_compile_options(${PROJ_NAME} PRIVATE -Wall
+target_compile_options(${PROJ_NAME} PRIVATE -Wall -Wno-missing-prototypes
 	$<$<CXX_COMPILER_ID:MSVC>:-Zc:__cplusplus>
 	$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-c++98-compat>
 )
