@@ -20,7 +20,19 @@ if (MSVC)
 	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJ_NAME})
 endif()
 
+# =======================================================#
+# Library depdendencies
+# =======================================================#
 add_subdirectory(lib)
+
+# Copying assets
+set(ASSETS_DIR  ${CMAKE_CURRENT_BINARY_DIR}/assets)
+file(GLOB_RECURSE ASSETS CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/assets/*")
+add_custom_target(copy_assets
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${ASSETS_DIR}
+	COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ASSETS} ${ASSETS_DIR}
+)
+add_dependencies(${PROJ_NAME} copy_assets)
 
 # =======================================================#
 # Compiler Settings

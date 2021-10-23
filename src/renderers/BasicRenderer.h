@@ -15,6 +15,7 @@ namespace TDW {
 		GLuint shaderProgram;
 
 		void setVertices(const std::vector<float>& verticesData, const std::vector<GLubyte>& indices);
+		void attachTexture(std::string texturePath);
 	};
 }
 

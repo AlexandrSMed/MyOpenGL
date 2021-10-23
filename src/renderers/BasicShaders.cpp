@@ -3,17 +3,25 @@
 const char* const TDW::BasicShaders::vertex = R"glsl(
 	#version 330 core
 	in vec3 aPos;
+	in vec2 aTextCoord;
+
+	out vec2 textCoord;
 
 	void main() {
-		gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+		gl_Position = vec4(aPos, 1.0);
+		textCoord = aTextCoord;
 	}
 )glsl";
 
 const char* const TDW::BasicShaders::fragment = R"glsl(
 	#version 330 core
-	out vec4 FragColor;
+	uniform sampler2D texture;
+
+	in vec2 textCoord;
+
+	out vec4 fragColor;
 
 	void main() {
-		FragColor = vec4(0.3f, 0.5f, 0.7f, 1.0f);
+		fragColor = texture(texture, textCoord);
 	}
 )glsl";

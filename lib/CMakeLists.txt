@@ -5,15 +5,20 @@ find_package(OpenGL REQUIRED)
 list(APPEND LIB_TARGETS ${OPENGL_LIBRARIES})
 list(APPEND LIB_INCLUDE_DIRS ${OPENGL_INCLUDE_DIRS})
 
-# Add GLFW library
+# GLFW
 add_subdirectory(glfw)
 list(APPEND LIB_TARGETS glfw)
 list(APPEND LIB_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/glfw/include")
 
-# Add GLAD library
+# GLAD
 add_subdirectory(glad)
 list(APPEND LIB_TARGETS glad)
 list(APPEND LIB_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/glad/include")
+
+# stb
+add_subdirectory(stb)
+list(APPEND LIB_TARGETS stb)
+list(APPEND LIB_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/stb/include")
 
 if(LIB_INCLUDE_DIRS)
 	list(REMOVE_DUPLICATES LIB_INCLUDE_DIRS)

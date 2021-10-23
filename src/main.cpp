@@ -4,7 +4,6 @@
 #include "renderers/BasicRenderer.h"
 
 int main() {
-	std::cout << "Hello, world!" << std::endl;
     auto &windowManager = TDW::WindowManager::shared();
     if (!windowManager.configureOpenGL(3, 3)) {
         return -1;
