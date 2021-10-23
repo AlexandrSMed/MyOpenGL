@@ -9,7 +9,10 @@ project(${PROJ_NAME})
 list(APPEND SOURCE_FILES
 	src/main.cpp
 	src/WindowManager.cpp
-	src/BasicRenderer.cpp)
+	src/Utils.cpp
+	src/renderers/Renderer.cpp
+	src/renderers/BasicRenderer.cpp
+	src/renderers/BasicShaders.cpp)
 
 add_executable(${PROJ_NAME} ${SOURCE_FILES})
 # source_group("Source Files\\api" REGULAR_EXPRESSION "src\/api\/.+")
@@ -22,7 +25,7 @@ add_subdirectory(lib)
 # =======================================================#
 # Compiler Settings
 # =======================================================#
-target_compile_options(${PROJ_NAME} PRIVATE -Wall -Wno-missing-prototypes
+target_compile_options(${PROJ_NAME} PRIVATE -Wall -Wno-missing-prototypes -DLOG
 	$<$<CXX_COMPILER_ID:MSVC>:-Zc:__cplusplus>
 	$<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-c++98-compat>
 )

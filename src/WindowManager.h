@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 #include <GLFW/glfw3.h>
-#include "Renderer.h"
+#include "renderers/Renderer.h"
 
 namespace TDW {
 

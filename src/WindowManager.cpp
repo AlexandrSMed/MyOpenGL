@@ -1,5 +1,7 @@
+#include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "Utils.h"
 #include "WindowManager.h"
 
 namespace TDW {
@@ -31,16 +33,21 @@ namespace TDW {
     GLFWwindow* WindowManager::presentWindow(int width, int height, std::string title) {
         GLFWwindow* window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
         if (!window) {
+            terminate();
             return nullptr;
         }
         glfwMakeContextCurrent(window);
-
         glfwSetFramebufferSizeCallback(window, windowDidResize);
+
+        for (auto renderer : renderers) {
+            renderer->contextDidLoad(window);
+        }
         return window;
     }
 
     bool WindowManager::initGLAD() {
-        return gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+        auto loadProc = reinterpret_cast<GLADloadproc>(glfwGetProcAddress);
+        return gladLoadGLLoader(loadProc);
     }
 
     void WindowManager::runWindowLoop(GLFWwindow* window) {
@@ -64,6 +71,10 @@ namespace TDW {
 
     void WindowManager::addRenderer(Renderer* renderer) {
         renderers.push_back(renderer);
+        auto window = glfwGetCurrentContext();
+        if (window) {
+            renderer->contextDidLoad(window);
+        }
     }
 
     WindowManager::~WindowManager() {
