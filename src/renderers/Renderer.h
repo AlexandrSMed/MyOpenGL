@@ -7,7 +7,8 @@ namespace TDW {
 	class Renderer {
 	public:
 		virtual void handleInput(GLFWwindow* window) = 0;
-		virtual void contextDidLoad(GLFWwindow* window) = 0;
+		virtual void contextDidLoad(GLFWwindow* window, int width, int height) = 0;
+		virtual void windowDidResize(GLFWwindow* window, int width, int height) = 0;
 		virtual void draw(GLFWwindow* window) = 0;
 
 		virtual ~Renderer() = default;

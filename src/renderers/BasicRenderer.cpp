@@ -12,7 +12,7 @@ namespace TDW {
 	void BasicRenderer::slowboatTranformations() {
 		auto timeFrame = timePassed();
 		float angle = timeFrame * 32;
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0, 1, 0));
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0, 1, 1));
 	}
 
 	double BasicRenderer::timePassed() {
@@ -67,10 +67,18 @@ namespace TDW {
 		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
+	void BasicRenderer::refreshProjectionMatrix() {
+		GLint data[4];
+		glGetIntegerv(GL_VIEWPORT, data);
+		projectionMatrix = glm::perspective(glm::radians(45.0f), float(data[2]) / float(data[3]), 0.1f, 100.0f);
+	}
+
 #pragma endregion Private
 	
-	void TDW::BasicRenderer::contextDidLoad(GLFWwindow*) {
+	void TDW::BasicRenderer::contextDidLoad(GLFWwindow* window, int width, int height) {
 		glEnable(GL_DEPTH_TEST);
+		refreshProjectionMatrix();
+
 		std::vector<GLuint> shaders {
 			loadShader(GL_VERTEX_SHADER, BasicShaders::vertex),
 			loadShader(GL_FRAGMENT_SHADER, BasicShaders::fragment)
@@ -115,6 +123,8 @@ namespace TDW {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		slowboatTranformations();
+		applyTransformMatrix("projectionMatrix", projectionMatrix);
+		applyTransformMatrix("viewMatrix", viewMatrix);
 		applyTransformMatrix("modelMatrix", modelMatrix);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, nullptr);
 	}
@@ -123,8 +133,13 @@ namespace TDW {
 
 	}
 
+	void BasicRenderer::windowDidResize(GLFWwindow* window, int width, int heigth) {
+		refreshProjectionMatrix();
+	} 
+
 	BasicRenderer::~BasicRenderer() {
 		glDeleteProgram(shaderProgram);
+		glDeleteBuffers(1, &vertexAO);
 	}
 
 }

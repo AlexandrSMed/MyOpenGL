@@ -7,8 +7,11 @@
 namespace TDW {
 #pragma region Private
 
-    void windowDidResize(GLFWwindow*, int width, int height) {
+    void WindowManager::windowDidResize(GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
+        for (auto renderer : renderers) {
+            renderer->windowDidResize(window, width, height);
+        }
     }
 
 #pragma endregion
@@ -37,10 +40,12 @@ namespace TDW {
             return nullptr;
         }
         glfwMakeContextCurrent(window);
-        glfwSetFramebufferSizeCallback(window, windowDidResize);
+        glfwSetFramebufferSizeCallback(window, [] (GLFWwindow* window, int width, int height) {
+            WindowManager::shared().windowDidResize(window, width, height);
+        });
 
         for (auto renderer : renderers) {
-            renderer->contextDidLoad(window);
+            renderer->contextDidLoad(window, width, height);
         }
         return window;
     }
@@ -73,7 +78,9 @@ namespace TDW {
         renderers.push_back(renderer);
         auto window = glfwGetCurrentContext();
         if (window) {
-            renderer->contextDidLoad(window);
+            int width, height;
+            glfwGetWindowSize(window, &width, &height);
+            renderer->contextDidLoad(window, width, height);
         }
     }
 

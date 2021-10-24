@@ -3,6 +3,8 @@
 const char* const TDW::BasicShaders::vertex = R"glsl(
 	#version 330 core
 	uniform mat4 modelMatrix;
+	uniform mat4 viewMatrix;
+	uniform mat4 projectionMatrix;
 
 	in vec3 aPos;
 	in vec2 aTextCoord;
@@ -10,7 +12,7 @@ const char* const TDW::BasicShaders::vertex = R"glsl(
 	out vec2 textCoord;
 
 	void main() {
-		gl_Position = modelMatrix * vec4(aPos, 1.0);
+		gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(aPos, 1.0);
 		textCoord = aTextCoord;
 	}
 )glsl";

@@ -21,5 +21,7 @@ namespace TDW {
 		~WindowManager();
 	private:
 		std::vector<Renderer*> renderers;
+
+		void windowDidResize(GLFWwindow* window, int width, int height);
 	};
 }
