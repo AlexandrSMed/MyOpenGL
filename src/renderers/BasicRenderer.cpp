@@ -17,7 +17,7 @@ namespace TDW {
 
 	void BasicRenderer::refreshDeltaTime() {
 		auto currentTime = glfwGetTime();
-		if (lastFrameTime) {
+		if (lastFrameTime > 0) {
 			deltaTime = currentTime - lastFrameTime;
 		}
 		lastFrameTime = currentTime;
@@ -139,7 +139,7 @@ namespace TDW {
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
 			static const auto cameraSpeed = deltaTime * 16;
 
-			float xDelta = (xPos - lastXMousePos) * cameraSpeed;
+			float xDelta = static_cast<float>((xPos - lastXMousePos) * cameraSpeed);
 
 			auto yRotationMatrix = glm::rotate(glm::mat4(1), -xDelta, glm::vec3(0, 1, 0));
 			auto rotationResult = yRotationMatrix * glm::vec4(camera.cameraPosition, 1);
@@ -147,8 +147,8 @@ namespace TDW {
 		}
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
 			static const auto rotationSpeed = deltaTime * 32;
-			float xDelta = (xPos - lastXMousePos) * rotationSpeed;
-			float yDelta = (lastYMousePos - yPos) * rotationSpeed;
+			float xDelta = static_cast<float>((xPos - lastXMousePos) * rotationSpeed);
+			float yDelta = static_cast<float>((lastYMousePos - yPos) * rotationSpeed);
 
 			modelMatrix = glm::rotate(modelMatrix, xDelta, glm::vec3(0, 1, 0));
 			modelMatrix = glm::rotate(modelMatrix, yDelta, glm::vec3(1, 0, 0));
