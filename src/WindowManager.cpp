@@ -14,6 +14,12 @@ namespace TDW {
         }
     }
 
+    void WindowManager::mouseDidMove(GLFWwindow* window, double xPos, double yPos) {
+        for (auto renderer : renderers) {
+            renderer->mouseDidMove(window, xPos, yPos);
+        }
+    }
+
 #pragma endregion
 
     WindowManager& WindowManager::shared() {
@@ -40,8 +46,12 @@ namespace TDW {
             return nullptr;
         }
         glfwMakeContextCurrent(window);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         glfwSetFramebufferSizeCallback(window, [] (GLFWwindow* mWindow, int nWidth, int nHeight) {
             WindowManager::shared().windowDidResize(mWindow, nWidth, nHeight);
+        });
+        glfwSetCursorPosCallback(window, [](GLFWwindow* mWindow, double xPos, double yPos) {
+            WindowManager::shared().mouseDidMove(mWindow, xPos, yPos);
         });
 
         for (auto renderer : renderers) {
@@ -62,7 +72,6 @@ namespace TDW {
                 break;
             }
             for (auto& renderer : renderers) {
-                renderer->handleInput(window);
                 renderer->draw(window);
             }
             glfwSwapBuffers(window);

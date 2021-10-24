@@ -10,6 +10,7 @@ list(APPEND SOURCE_FILES
 	src/main.cpp
 	src/WindowManager.cpp
 	src/Utils.cpp
+	src/Camera.cpp
 	src/renderers/Renderer.cpp
 	src/renderers/BasicRenderer.cpp
 	src/renderers/BasicShaders.cpp)

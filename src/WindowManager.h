@@ -23,5 +23,6 @@ namespace TDW {
 		std::vector<Renderer*> renderers;
 
 		void windowDidResize(GLFWwindow* window, int width, int height);
+		void mouseDidMove(GLFWwindow* window, double xPos, double yPos);
 	};
 }

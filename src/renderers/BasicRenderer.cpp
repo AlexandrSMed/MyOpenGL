@@ -10,16 +10,18 @@ namespace TDW {
 
 #pragma region Private
 	void BasicRenderer::slowboatTranformations() {
-		float timeFrame = static_cast<float>(timePassed());
-		float angle = timeFrame * 32;
-		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0, 1, 1));
+		float timeFrame = static_cast<float>(deltaTime);
+		float angle = timeFrame * 8;
+		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0, 0, 1));
 	}
 
-	double BasicRenderer::timePassed() {
-		static double time = glfwGetTime();
-		auto difference = glfwGetTime() - time;
-		time = glfwGetTime();
-		return difference;
+	void BasicRenderer::refreshDeltaTime() {
+		auto currentTime = glfwGetTime();
+		if (lastFrameTime) {
+			deltaTime = currentTime - lastFrameTime;
+		}
+		lastFrameTime = currentTime;
+		return;
 	}
 
 	void BasicRenderer::setVertices(const std::vector<float>& verticesData, const std::vector<GLubyte>& indices) {
@@ -70,12 +72,15 @@ namespace TDW {
 	void BasicRenderer::refreshProjectionMatrix() {
 		GLint data[4];
 		glGetIntegerv(GL_VIEWPORT, data);
-		projectionMatrix = glm::perspective(glm::radians(45.0f), float(data[2]) / float(data[3]), 0.1f, 100.0f);
+		projectionMatrix = glm::perspective(glm::radians(45.0f), float(data[2]) / float(data[3]), 2.0f, 100.0f);
 	}
 
 #pragma endregion Private
 	
-	void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, int, int) {
+	void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, int width, int height) {
+		lastXMousePos = width / 2;
+		lastYMousePos = height / 2;
+		
 		glEnable(GL_DEPTH_TEST);
 		refreshProjectionMatrix();
 
@@ -119,18 +124,39 @@ namespace TDW {
 	}
 
 	void BasicRenderer::draw(GLFWwindow*) {
+		refreshDeltaTime();
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		slowboatTranformations();
 		applyTransformMatrix("projectionMatrix", projectionMatrix);
-		applyTransformMatrix("viewMatrix", viewMatrix);
+		applyTransformMatrix("viewMatrix", camera.viewMatrix());
 		applyTransformMatrix("modelMatrix", modelMatrix);
 		glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, nullptr);
 	}
 
-	void BasicRenderer::handleInput(GLFWwindow*) {
+	void BasicRenderer::mouseDidMove(GLFWwindow* window, double xPos, double yPos) {
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+			static const auto cameraSpeed = deltaTime * 16;
 
+			float xDelta = (xPos - lastXMousePos) * cameraSpeed;
+
+			auto yRotationMatrix = glm::rotate(glm::mat4(1), -xDelta, glm::vec3(0, 1, 0));
+			auto rotationResult = yRotationMatrix * glm::vec4(camera.cameraPosition, 1);
+			camera.cameraPosition = glm::vec3(rotationResult);
+		}
+		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
+			static const auto rotationSpeed = deltaTime * 32;
+			float xDelta = (xPos - lastXMousePos) * rotationSpeed;
+			float yDelta = (lastYMousePos - yPos) * rotationSpeed;
+
+			modelMatrix = glm::rotate(modelMatrix, xDelta, glm::vec3(0, 1, 0));
+			modelMatrix = glm::rotate(modelMatrix, yDelta, glm::vec3(1, 0, 0));
+
+		}
+
+		lastXMousePos = xPos;
+		lastYMousePos = yPos;
 	}
 
 	void BasicRenderer::windowDidResize(GLFWwindow*, int, int) {
