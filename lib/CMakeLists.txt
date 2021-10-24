@@ -20,6 +20,11 @@ add_subdirectory(stb)
 list(APPEND LIB_TARGETS stb)
 list(APPEND LIB_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/stb/include")
 
+# glm
+add_subdirectory(glm)
+list(APPEND LIB_TARGETS glm)
+list(APPEND LIB_INCLUDE_DIRS "${CMAKE_CURRENT_SOURCE_DIR}/glm/glm")
+
 if(LIB_INCLUDE_DIRS)
 	list(REMOVE_DUPLICATES LIB_INCLUDE_DIRS)
 	target_include_directories(${PROJ_NAME} PRIVATE ${LIB_INCLUDE_DIRS})

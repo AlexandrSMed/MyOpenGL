@@ -2,13 +2,15 @@
 
 const char* const TDW::BasicShaders::vertex = R"glsl(
 	#version 330 core
+	uniform mat4 modelMatrix;
+
 	in vec3 aPos;
 	in vec2 aTextCoord;
 
 	out vec2 textCoord;
 
 	void main() {
-		gl_Position = vec4(aPos, 1.0);
+		gl_Position = modelMatrix * vec4(aPos, 1.0);
 		textCoord = aTextCoord;
 	}
 )glsl";
