@@ -10,7 +10,7 @@ namespace TDW {
 
 #pragma region Private
 	void BasicRenderer::slowboatTranformations() {
-		auto timeFrame = timePassed();
+		float timeFrame = static_cast<float>(timePassed());
 		float angle = timeFrame * 32;
 		modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0, 1, 1));
 	}
@@ -63,7 +63,7 @@ namespace TDW {
 	}
 
 	void BasicRenderer::applyTransformMatrix(std::string name, const glm::mat4& matrix) {
-		GLuint uniformLocation = glGetUniformLocation(shaderProgram, name.c_str());
+		GLint uniformLocation = glGetUniformLocation(shaderProgram, name.c_str());
 		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
 	}
 
@@ -75,7 +75,7 @@ namespace TDW {
 
 #pragma endregion Private
 	
-	void TDW::BasicRenderer::contextDidLoad(GLFWwindow* window, int width, int height) {
+	void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, int, int) {
 		glEnable(GL_DEPTH_TEST);
 		refreshProjectionMatrix();
 
@@ -133,9 +133,9 @@ namespace TDW {
 
 	}
 
-	void BasicRenderer::windowDidResize(GLFWwindow* window, int width, int heigth) {
+	void BasicRenderer::windowDidResize(GLFWwindow*, int, int) {
 		refreshProjectionMatrix();
-	} 
+	}
 
 	BasicRenderer::~BasicRenderer() {
 		glDeleteProgram(shaderProgram);

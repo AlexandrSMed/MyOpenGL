@@ -40,8 +40,8 @@ namespace TDW {
             return nullptr;
         }
         glfwMakeContextCurrent(window);
-        glfwSetFramebufferSizeCallback(window, [] (GLFWwindow* window, int width, int height) {
-            WindowManager::shared().windowDidResize(window, width, height);
+        glfwSetFramebufferSizeCallback(window, [] (GLFWwindow* mWindow, int nWidth, int nHeight) {
+            WindowManager::shared().windowDidResize(mWindow, nWidth, nHeight);
         });
 
         for (auto renderer : renderers) {
