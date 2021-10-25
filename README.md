@@ -1,6 +1,4 @@
 # MyOpenGL
-Demo project
-# MyOpenGL
 Sample C++/OpenGL application.
 
 ---
