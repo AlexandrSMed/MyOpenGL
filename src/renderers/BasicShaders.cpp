@@ -33,5 +33,5 @@ const char* const TDW::BasicShaders::fragment = R"glsl(
         vec4 texture = mix(texture(textureOne, textCoord), texture(textureTwo, textCoord), textureInterpolation);
         texture.a -= mixingColorAlpha;
         fragColor = vec4(texture.rgb * texture.a + mixingColor.rgb * mixingColor.a, 1);
-}
+    }
 )glsl";

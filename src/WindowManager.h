@@ -4,12 +4,15 @@
 #include <vector>
 #include <GLFW/glfw3.h>
 #include "renderers/Renderer.h"
+#include "Camera.h"
+
 
 namespace TDW {
 
     class WindowManager {
 
     public:
+        WindowManager();
         static WindowManager& shared();
         bool configureOpenGL(int major, int minor);
         GLFWwindow* presentWindow(int width, int height, std::string title);
@@ -20,6 +23,7 @@ namespace TDW {
 
         ~WindowManager();
     private:
+        Camera camera;
         std::vector<Renderer*> renderers;
 
         void keyDidSendAction(GLFWwindow* window, int key, int action);

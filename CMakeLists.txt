@@ -12,11 +12,13 @@ list(APPEND SOURCE_FILES
     src/Utils.cpp
     src/Camera.cpp
     src/renderers/Renderer.cpp
+    src/renderers/StaticRenderer.cpp
+    src/renderers/StaticShaders.cpp
     src/renderers/BasicRenderer.cpp
     src/renderers/BasicShaders.cpp)
 
 add_executable(${PROJ_NAME} ${SOURCE_FILES})
-# source_group("Source Files\\api" REGULAR_EXPRESSION "src\/api\/.+")
+source_group("Source Files\\renderers" REGULAR_EXPRESSION "src\/renderers\/.+")
 if (MSVC) 
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJ_NAME})
 endif()

@@ -30,7 +30,7 @@ std::string TDW::Utils::messageFromGlStatusCode(GLenum statusCode) {
 
 double TDW::Utils::randomNumber(double min, double max) {
     static std::random_device rd;
-    std::mt19937 e2(rd());
+    std::default_random_engine engine(rd());
     std::uniform_real_distribution<double> dist(min, max);
     return dist(rd);
 }

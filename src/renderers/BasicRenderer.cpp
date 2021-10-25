@@ -1,7 +1,7 @@
 #include <iostream>
 #include <glad/glad.h>
+#include <glm/gtc/matrix_transform.hpp>
 #include <stb_image.h>
-#include <glm/gtc/type_ptr.hpp>
 #include "BasicRenderer.h"
 #include "BasicShaders.h"
 #include "Utils.h"
@@ -62,21 +62,6 @@ void TDW::BasicRenderer::refreshDeltaTime() {
     return;
 }
 
-void TDW::BasicRenderer::setVertices(const std::vector<float>& verticesData, const std::vector<GLubyte>& indices) {
-    glGenVertexArrays(1, &vertexAO); 
-    glBindVertexArray(vertexAO);
-
-    GLuint vertexBO;
-    glGenBuffers(1, &vertexBO);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesData.size(), verticesData.data(), GL_STATIC_DRAW);
-
-    GLuint elementsBO;
-    glGenBuffers(1, &elementsBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementsBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * indices.size(), indices.data(), GL_STATIC_DRAW);
-}
-
 void TDW::BasicRenderer::attachTexture(std::string texturePath, int glTextureIndex) {
     int width, height;
     auto imageData = stbi_load(texturePath.c_str(), &width, &height, nullptr, 0);
@@ -103,25 +88,13 @@ void TDW::BasicRenderer::attachTexture(std::string texturePath, int glTextureInd
     stbi_image_free(imageData);
 }
 
-void TDW::BasicRenderer::applyTransformMatrix(std::string name, const glm::mat4& matrix) {
-    GLint uniformLocation = glGetUniformLocation(shaderProgram, name.c_str());
-    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
-}
-
-void TDW::BasicRenderer::refreshProjectionMatrix() {
-    GLint data[4];
-    glGetIntegerv(GL_VIEWPORT, data);
-    projectionMatrix = glm::perspective(glm::radians(45.0f), float(data[2]) / float(data[3]), 2.0f, 100.0f);
-}
-
 #pragma endregion Private
     
-void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, int width, int height) {
+void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, Camera&, int width, int height) {
     lastXMousePos = width / 2;
     lastYMousePos = height / 2;
     
     glEnable(GL_DEPTH_TEST);
-    refreshProjectionMatrix();
 
     std::vector<GLuint> shaders {
         loadShader(GL_VERTEX_SHADER, BasicShaders::vertex),
@@ -130,7 +103,7 @@ void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, int width, int height) {
     shaderProgram = linkProgram(shaders);
     glUseProgram(shaderProgram);
 
-    setVertices({
+    vertexAO = setVertices({
         // Vertices				// Texture	
         -0.5f,	-0.5f,	0.5f,	0.0f,	0.0f, // 0
         0.5f,	-0.5f,	0.5f,	1.0f,	0.0f, // 1
@@ -159,6 +132,7 @@ void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, int width, int height) {
     auto stride = sizeof(float) * 5;
     enableVertexAttribute(shaderProgram, "aPos", 3, stride, 0);
     enableVertexAttribute(shaderProgram, "aTextCoord", 2, stride, sizeof(float) * 3);
+
     for (size_t i = 0; i < textureStack.size(); ++i) {
         auto textureName = textureStack[i];
         attachTexture(textureName, GL_TEXTURE0 + static_cast<int>(i));
@@ -172,23 +146,21 @@ void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, int width, int height) {
     glUniform1i(textureOneLocation, 0);
 }
 
-void TDW::BasicRenderer::draw(GLFWwindow*) {
+void TDW::BasicRenderer::draw(GLFWwindow*, Camera& camera) {
     refreshDeltaTime();
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(shaderProgram);
+    glBindVertexArray(vertexAO);
     switchTexture();
     slowboatTranformations();
-    applyTransformMatrix("projectionMatrix", projectionMatrix);
-    applyTransformMatrix("viewMatrix", camera.viewMatrix());
-    applyTransformMatrix("modelMatrix", modelMatrix);
+    attachMatrix(shaderProgram, "projectionMatrix", camera.projectionMatrix());
+    attachMatrix(shaderProgram, "viewMatrix", camera.viewMatrix());
+    attachMatrix(shaderProgram, "modelMatrix", modelMatrix);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, nullptr);
-
-
 }
 
-void TDW::BasicRenderer::mouseDidMove(GLFWwindow* window, double xPos, double yPos) {
+void TDW::BasicRenderer::mouseDidMove(GLFWwindow* window, Camera& camera, double xPos, double yPos) {
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-        static const auto cameraSpeed = deltaTime * 16;
+        static const auto cameraSpeed = deltaTime * 0.8;
 
         float xDelta = static_cast<float>((xPos - lastXMousePos) * cameraSpeed);
 
@@ -197,7 +169,7 @@ void TDW::BasicRenderer::mouseDidMove(GLFWwindow* window, double xPos, double yP
         camera.cameraPosition = glm::vec3(rotationResult);
     }
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        static const auto rotationSpeed = deltaTime * 16;
+        static const auto rotationSpeed = deltaTime * 0.8;
         float xDelta = static_cast<float>((xPos - lastXMousePos) * rotationSpeed);
         float yDelta = static_cast<float>((lastYMousePos - yPos) * rotationSpeed);
 
@@ -210,11 +182,9 @@ void TDW::BasicRenderer::mouseDidMove(GLFWwindow* window, double xPos, double yP
     lastYMousePos = yPos;
 }
 
-void TDW::BasicRenderer::windowDidResize(GLFWwindow*, int, int) {
-    refreshProjectionMatrix();
-}
+void TDW::BasicRenderer::windowDidResize(GLFWwindow*, Camera&, int, int) {}
 
-void TDW::BasicRenderer::keyDidSendAction(GLFWwindow*, int key, int action) {
+void TDW::BasicRenderer::keyDidSendAction(GLFWwindow*, Camera&, int key, int action) {
     if ((action == GLFW_PRESS) && (key == GLFW_KEY_SPACE) && !textureSwitching) {
         textureSwitching = true;
         textureSwitchDeltaTime = glfwGetTime();

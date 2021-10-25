@@ -2,6 +2,7 @@
 #include "glad/glad.h"
 #include "WindowManager.h"
 #include "renderers/BasicRenderer.h"
+#include "renderers/StaticRenderer.h"
 
 int main() {
     auto &windowManager = TDW::WindowManager::shared();
@@ -9,7 +10,7 @@ int main() {
         return -1;
     }
 
-    auto window = windowManager.presentWindow(800, 600, "MyOpenGL");
+    auto window = windowManager.presentWindow(1024, 768, "MyOpenGL");
     if (!window) {
         return -1;
     }
@@ -20,6 +21,7 @@ int main() {
     std::cout << "GLAD has been initialized with the OpenGL version: " << glGetString(GL_VERSION) << std::endl;
 #endif // LOG
     windowManager.addRenderer(new TDW::BasicRenderer());
+    windowManager.addRenderer(new TDW::StaticRenderer(2048, 10));
     windowManager.runWindowLoop(window);
     windowManager.terminate();
 }

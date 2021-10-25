@@ -6,6 +6,7 @@ namespace TDW {
         glm::vec3 cameraUpDirection;
         glm::vec3 cameraLookAt;
 
+        glm::mat4 projectionMatrix();
         glm::mat4 viewMatrix();
     };
 }

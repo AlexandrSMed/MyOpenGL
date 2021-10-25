@@ -1,4 +1,6 @@
 #include <iostream>
+#include <glm/fwd.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glad/glad.h>
 #include "Utils.h"
 #include "Renderer.h"
@@ -62,4 +64,27 @@ void TDW::Renderer::enableVertexAttribute(GLuint program, std::string name, size
     auto location = glGetAttribLocation(program, name.c_str());
     glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void *>(offset));
     glEnableVertexAttribArray(location);
+}
+
+void TDW::Renderer::attachMatrix(GLuint program, std::string name, const glm::mat4& matrix) {
+    GLint uniformLocation = glGetUniformLocation(program, name.c_str());
+    glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+GLuint TDW::Renderer::setVertices(const std::vector<float>& verticesData, const std::vector<GLubyte>& indices) {
+    GLuint vertexAO;
+    glGenVertexArrays(1, &vertexAO); 
+    glBindVertexArray(vertexAO);
+
+    GLuint vertexBO;
+    glGenBuffers(1, &vertexBO);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * verticesData.size(), verticesData.data(), GL_STATIC_DRAW);
+
+    GLuint elementsBO;
+    glGenBuffers(1, &elementsBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, elementsBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLubyte) * indices.size(), indices.data(), GL_STATIC_DRAW);
+
+    return vertexAO;
 }

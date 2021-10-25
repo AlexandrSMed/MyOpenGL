@@ -9,23 +9,29 @@
 void TDW::WindowManager::windowDidResize(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
     for (auto renderer : renderers) {
-        renderer->windowDidResize(window, width, height);
+        renderer->windowDidResize(window, camera, width, height);
     }
 }
 
 void TDW::WindowManager::mouseDidMove(GLFWwindow* window, double xPos, double yPos) {
     for (auto renderer : renderers) {
-        renderer->mouseDidMove(window, xPos, yPos);
+        renderer->mouseDidMove(window, camera, xPos, yPos);
     }
 }
 
 void TDW::WindowManager::keyDidSendAction(GLFWwindow* window, int key, int action) {
     for (auto renderer : renderers) {
-        renderer->keyDidSendAction(window, key, action);
+        renderer->keyDidSendAction(window, camera, key, action);
     }
 }
 
 #pragma endregion
+
+TDW::WindowManager::WindowManager() {
+    camera.cameraUpDirection = glm::vec3(0, 1, 0);
+    camera.cameraLookAt = glm::vec3(0);
+    camera.cameraPosition = glm::vec3(4);
+}
 
 TDW::WindowManager& TDW::WindowManager::shared() {
     static WindowManager* manager = new WindowManager();
@@ -62,7 +68,7 @@ GLFWwindow* TDW::WindowManager::presentWindow(int width, int height, std::string
         TDW::WindowManager::shared().keyDidSendAction(mWindow, key, action);
     });
     for (auto renderer : renderers) {
-        renderer->contextDidLoad(window, width, height);
+        renderer->contextDidLoad(window, camera, width, height);
     }
     return window;
 }
@@ -78,8 +84,11 @@ void TDW::WindowManager::runWindowLoop(GLFWwindow* window) {
             glfwSetWindowShouldClose(window, true);
             break;
         }
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         for (auto& renderer : renderers) {
-            renderer->draw(window);
+            renderer->draw(window, camera);
         }
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -96,7 +105,7 @@ void TDW::WindowManager::addRenderer(Renderer* renderer) {
     if (window) {
         int width, height;
         glfwGetWindowSize(window, &width, &height);
-        renderer->contextDidLoad(window, width, height);
+        renderer->contextDidLoad(window, camera, width, height);
     }
 }
 
