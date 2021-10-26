@@ -141,22 +141,24 @@ void TDW::BasicRenderer::draw(GLFWwindow*, const Camera& camera) {
     glUseProgram(shaderProgram);
     glBindVertexArray(vertexAO);
     switchTexture();
-    slowboatTranformations();
+  //  slowboatTranformations();
     attachMatrix(shaderProgram, "projectionMatrix", camera.getProjectionMatrix());
     attachMatrix(shaderProgram, "viewMatrix", camera.makeViewMatrix());
     attachMatrix(shaderProgram, "modelMatrix", modelMatrix);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, nullptr);
 }
 
-void TDW::BasicRenderer::mouseDidMove(GLFWwindow* window, const Camera&, double xPos, double yPos) {
+void TDW::BasicRenderer::mouseDidMove(GLFWwindow* window, const Camera& camera, double xPos, double yPos) {
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
         static const auto rotationSpeed = Utils::deltaTime() * 0.8;
-        float xDelta = static_cast<float>((xPos - lastXMousePos) * rotationSpeed);
-        float yDelta = static_cast<float>((lastYMousePos - yPos) * rotationSpeed);
+        float xAngle = static_cast<float>((xPos - lastXMousePos) * rotationSpeed);
+        float yAngle = static_cast<float>((lastYMousePos - yPos) * rotationSpeed);
+        auto invertedModelMatrix = glm::inverse(modelMatrix) * glm::inverse(camera.makeViewMatrix());
+        auto yVector = glm::vec3(invertedModelMatrix * glm::vec4(0, 1, 0, 0));
+        auto xVector = glm::vec3(invertedModelMatrix * glm::vec4(1, 0, 0, 0));
 
-        modelMatrix = glm::rotate(modelMatrix, xDelta, glm::vec3(0, 1, 0));
-        modelMatrix = glm::rotate(modelMatrix, yDelta, glm::vec3(1, 0, 0));
-
+        modelMatrix = glm::rotate(modelMatrix, xAngle, yVector);
+        modelMatrix = glm::rotate(modelMatrix, -yAngle, xVector);
     }
 
     lastXMousePos = xPos;
