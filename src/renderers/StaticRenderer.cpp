@@ -33,7 +33,7 @@ TDW::StaticRenderer::StaticRenderer(size_t count, unsigned radius) {
     });
 }
 
-void TDW::StaticRenderer::draw(GLFWwindow*, Camera& camera) {
+void TDW::StaticRenderer::draw(GLFWwindow*, const Camera& camera) {
     glUseProgram(shaderProgram);
     glBindVertexArray(vertexAO);
     attachMatrix(shaderProgram, "projectionMatrix", camera.projectionMatrix());
@@ -47,7 +47,7 @@ void TDW::StaticRenderer::draw(GLFWwindow*, Camera& camera) {
     }
 }
 
-void TDW::StaticRenderer::contextDidLoad(GLFWwindow*, Camera&, int, int) {
+void TDW::StaticRenderer::contextDidLoad(GLFWwindow*, const Camera&, int, int) {
     glEnable(GL_DEPTH_TEST);
 
     std::vector<GLuint> shaders { 
@@ -74,10 +74,10 @@ void TDW::StaticRenderer::contextDidLoad(GLFWwindow*, Camera&, int, int) {
     enableVertexAttribute(shaderProgram, "aColorFactor", 1, stride, sizeof(float) * 3);
 }
 
-void TDW::StaticRenderer::mouseDidMove(GLFWwindow*, Camera&, double, double) {}
+void TDW::StaticRenderer::mouseDidMove(GLFWwindow*, const Camera&, double, double) {}
 
-void TDW::StaticRenderer::windowDidResize(GLFWwindow*, Camera&, int, int) {}
+void TDW::StaticRenderer::windowDidResize(GLFWwindow*, const Camera&, int, int) {}
 
-void TDW::StaticRenderer::keyDidSendAction(GLFWwindow*, Camera&, int, int) {}
+void TDW::StaticRenderer::keyDidSendAction(GLFWwindow*, const Camera&, int, int) {}
 
 TDW::StaticRenderer::~StaticRenderer() {}

@@ -14,11 +14,11 @@ namespace TDW {
             modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.8, 0));
         }
 
-        void draw(GLFWwindow* window, Camera& camera) override;
-        void contextDidLoad(GLFWwindow* window, Camera& camera, int width, int height) override;
-        void mouseDidMove(GLFWwindow* window, Camera& camera, double xPos, double yPos) override;
-        void windowDidResize(GLFWwindow* window, Camera& camera, int width, int height) override;
-        void keyDidSendAction(GLFWwindow* window, Camera& camera, int key, int action) override;
+        void draw(GLFWwindow* window, const Camera& camera) override;
+        void contextDidLoad(GLFWwindow* window, const Camera& camera, int width, int height) override;
+        void mouseDidMove(GLFWwindow* window, const Camera& camera, double xPos, double yPos) override;
+        void windowDidResize(GLFWwindow* window, const Camera& camera, int width, int height) override;
+        void keyDidSendAction(GLFWwindow* window, const Camera& camera, int key, int action) override;
         ~BasicRenderer() override;
     private:
         std::vector<std::string> textureStack;
@@ -27,8 +27,6 @@ namespace TDW {
         bool textureSwitching = false;
         float textureTransitionAlpha = 0;
 
-        double lastFrameTime = 0;
-        double deltaTime = 0;
         double lastXMousePos;
         double lastYMousePos;
 
@@ -40,7 +38,6 @@ namespace TDW {
         
         void switchTexture();
         void slowboatTranformations();
-        void refreshDeltaTime();
         void attachTexture(std::string texturePath, int glTextureIndex);
     };
 }

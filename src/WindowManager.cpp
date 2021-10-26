@@ -1,6 +1,7 @@
 #include <iostream>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 #include "Utils.h"
 #include "WindowManager.h"
 
@@ -14,6 +15,16 @@ void TDW::WindowManager::windowDidResize(GLFWwindow* window, int width, int heig
 }
 
 void TDW::WindowManager::mouseDidMove(GLFWwindow* window, double xPos, double yPos) {
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+        static const auto cameraSpeed = Utils::deltaTime() * 0.8;
+
+        float xDelta = static_cast<float>((xPos - lastXMousePos) * cameraSpeed);
+
+        auto yRotationMatrix = glm::rotate(glm::mat4(1), -xDelta, glm::vec3(0, 1, 0));
+        auto rotationResult = yRotationMatrix * glm::vec4(camera.cameraPosition, 1);
+        camera.cameraPosition = glm::vec3(rotationResult);
+    }
+    lastXMousePos = xPos;
     for (auto renderer : renderers) {
         renderer->mouseDidMove(window, camera, xPos, yPos);
     }
@@ -92,6 +103,7 @@ void TDW::WindowManager::runWindowLoop(GLFWwindow* window) {
         }
         glfwSwapBuffers(window);
         glfwPollEvents();
+        Utils::deltaTime(true);
     }
 }
 

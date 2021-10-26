@@ -2,11 +2,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Camera.h"
 
-glm::mat4 TDW::Camera::viewMatrix() {
+glm::mat4 TDW::Camera::viewMatrix() const {
     return glm::lookAt(cameraPosition, cameraLookAt, cameraUpDirection);
 }
 
-glm::mat4 TDW::Camera::projectionMatrix() {
+glm::mat4 TDW::Camera::projectionMatrix() const {
     // TODO: optimize it
     GLint data[4];
     glGetIntegerv(GL_VIEWPORT, data);

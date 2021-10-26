@@ -48,18 +48,9 @@ void TDW::BasicRenderer::switchTexture() {
 }
 
 void TDW::BasicRenderer::slowboatTranformations() {
-    float timeFrame = static_cast<float>(deltaTime);
+    float timeFrame = static_cast<float>(Utils::deltaTime());
     float angle = timeFrame * 8;
-    modelMatrix = glm::rotate(modelMatrix, glm::radians(angle), glm::vec3(0, 0, 1));
-}
-
-void TDW::BasicRenderer::refreshDeltaTime() {
-    auto currentTime = glfwGetTime();
-    if (lastFrameTime > 0) {
-        deltaTime = currentTime - lastFrameTime;
-    }
-    lastFrameTime = currentTime;
-    return;
+    modelMatrix = glm::rotate(modelMatrix, angle, glm::vec3(0, 0, 1));
 }
 
 void TDW::BasicRenderer::attachTexture(std::string texturePath, int glTextureIndex) {
@@ -90,7 +81,7 @@ void TDW::BasicRenderer::attachTexture(std::string texturePath, int glTextureInd
 
 #pragma endregion Private
     
-void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, Camera&, int width, int height) {
+void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, const Camera&, int width, int height) {
     lastXMousePos = width / 2;
     lastYMousePos = height / 2;
     
@@ -146,8 +137,7 @@ void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, Camera&, int width, int hei
     glUniform1i(textureOneLocation, 0);
 }
 
-void TDW::BasicRenderer::draw(GLFWwindow*, Camera& camera) {
-    refreshDeltaTime();
+void TDW::BasicRenderer::draw(GLFWwindow*, const Camera& camera) {
     glUseProgram(shaderProgram);
     glBindVertexArray(vertexAO);
     switchTexture();
@@ -158,18 +148,9 @@ void TDW::BasicRenderer::draw(GLFWwindow*, Camera& camera) {
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, nullptr);
 }
 
-void TDW::BasicRenderer::mouseDidMove(GLFWwindow* window, Camera& camera, double xPos, double yPos) {
-    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
-        static const auto cameraSpeed = deltaTime * 0.8;
-
-        float xDelta = static_cast<float>((xPos - lastXMousePos) * cameraSpeed);
-
-        auto yRotationMatrix = glm::rotate(glm::mat4(1), -xDelta, glm::vec3(0, 1, 0));
-        auto rotationResult = yRotationMatrix * glm::vec4(camera.cameraPosition, 1);
-        camera.cameraPosition = glm::vec3(rotationResult);
-    }
+void TDW::BasicRenderer::mouseDidMove(GLFWwindow* window, const Camera&, double xPos, double yPos) {
     if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS) {
-        static const auto rotationSpeed = deltaTime * 0.8;
+        static const auto rotationSpeed = Utils::deltaTime() * 0.8;
         float xDelta = static_cast<float>((xPos - lastXMousePos) * rotationSpeed);
         float yDelta = static_cast<float>((lastYMousePos - yPos) * rotationSpeed);
 
@@ -182,9 +163,9 @@ void TDW::BasicRenderer::mouseDidMove(GLFWwindow* window, Camera& camera, double
     lastYMousePos = yPos;
 }
 
-void TDW::BasicRenderer::windowDidResize(GLFWwindow*, Camera&, int, int) {}
+void TDW::BasicRenderer::windowDidResize(GLFWwindow*, const Camera&, int, int) {}
 
-void TDW::BasicRenderer::keyDidSendAction(GLFWwindow*, Camera&, int key, int action) {
+void TDW::BasicRenderer::keyDidSendAction(GLFWwindow*, const Camera&, int key, int action) {
     if ((action == GLFW_PRESS) && (key == GLFW_KEY_SPACE) && !textureSwitching) {
         textureSwitching = true;
         textureSwitchDeltaTime = glfwGetTime();

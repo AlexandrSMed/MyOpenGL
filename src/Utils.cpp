@@ -34,3 +34,12 @@ double TDW::Utils::randomNumber(double min, double max) {
     std::uniform_real_distribution<double> dist(min, max);
     return dist(rd);
 }
+
+double TDW::Utils::deltaTime(bool refresh) {
+    static double lastTime = 0;
+    double difference = glfwGetTime() - lastTime;
+    if (refresh) {
+        lastTime = glfwGetTime();
+    }
+    return difference;
+}

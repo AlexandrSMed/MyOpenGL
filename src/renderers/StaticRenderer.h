@@ -8,11 +8,11 @@ namespace TDW {
     public:
         StaticRenderer(size_t count, unsigned radius);
 
-        void draw(GLFWwindow* window, Camera& camera) override;
-        void contextDidLoad(GLFWwindow* window, Camera& camera, int width, int height) override;
-        void mouseDidMove(GLFWwindow* window, Camera& camera, double xPos, double yPos) override;
-        void windowDidResize(GLFWwindow* window, Camera& camera, int width, int height) override;
-        void keyDidSendAction(GLFWwindow* window, Camera& camera, int key, int action) override;
+        void draw(GLFWwindow* window, const Camera& camera) override;
+        void contextDidLoad(GLFWwindow* window, const Camera& camera, int width, int height) override;
+        void mouseDidMove(GLFWwindow* window, const Camera& camera, double xPos, double yPos) override;
+        void windowDidResize(GLFWwindow* window, const Camera& camera, int width, int height) override;
+        void keyDidSendAction(GLFWwindow* window, const Camera& camera, int key, int action) override;
         ~StaticRenderer() override;
 
     private:

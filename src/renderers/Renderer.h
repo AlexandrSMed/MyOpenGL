@@ -4,18 +4,14 @@
 #include <glm/fwd.hpp>
 #include <GLFW/glfw3.h>
 #include "Camera.h"
+#include "EventListener.h"
 
 namespace TDW {
-    class Renderer {
+    class Renderer : public EventListener {
     public:
-        // TODO: make camera constant, and handle camera movement somewhere else
-        virtual void mouseDidMove(GLFWwindow* window, Camera& camera, double xPos, double yPos) = 0;
-        virtual void contextDidLoad(GLFWwindow* window, Camera& camera, int width, int height) = 0;
-        virtual void windowDidResize(GLFWwindow* window, Camera& camera, int width, int height) = 0;
-        virtual void draw(GLFWwindow* window, Camera& camera) = 0;
-        virtual void keyDidSendAction(GLFWwindow* window, Camera& camera, int key, int action) = 0;
+        virtual void draw(GLFWwindow* window, const Camera& camera) = 0;
 
-        virtual ~Renderer() = default;
+        virtual ~Renderer() override = default;
     protected:
         GLuint loadShader(GLenum type, const char* source);
         GLuint linkProgram(const std::vector<GLuint>& shaders, bool deleteShaders = true);
