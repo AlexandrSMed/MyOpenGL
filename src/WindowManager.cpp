@@ -9,6 +9,7 @@
 
 void TDW::WindowManager::windowDidResize(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
+    camera.refreshProjectionMatrix();
     for (auto renderer : renderers) {
         renderer->windowDidResize(window, camera, width, height);
     }
@@ -68,6 +69,7 @@ GLFWwindow* TDW::WindowManager::presentWindow(int width, int height, std::string
         return nullptr;
     }
     glfwMakeContextCurrent(window);
+    camera.refreshProjectionMatrix(45, 2, 100, width, height);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     glfwSetFramebufferSizeCallback(window, [] (GLFWwindow* mWindow, int nWidth, int nHeight) {
         TDW::WindowManager::shared().windowDidResize(mWindow, nWidth, nHeight);

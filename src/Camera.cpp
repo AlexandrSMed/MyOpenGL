@@ -2,13 +2,24 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Camera.h"
 
-glm::mat4 TDW::Camera::viewMatrix() const {
+const int TDW::Camera::undefinedSize = -1;
+
+glm::mat4 TDW::Camera::makeViewMatrix() const {
     return glm::lookAt(cameraPosition, cameraLookAt, cameraUpDirection);
 }
 
-glm::mat4 TDW::Camera::projectionMatrix() const {
-    // TODO: optimize it
-    GLint data[4];
-    glGetIntegerv(GL_VIEWPORT, data);
-    return glm::perspective(glm::radians(45.0f), float(data[2]) / float(data[3]), 2.0f, 100.0f);
+void TDW::Camera::refreshProjectionMatrix(float angle, float near, float far, int width, int height) {
+    if (width == undefinedSize || height == undefinedSize) {
+        GLint data[4];
+        glGetIntegerv(GL_VIEWPORT, data);
+        width = data[2];
+        height = data[3];
+    }
+    projectionMatrix = glm::perspective(glm::radians(angle), float(width) / float(height), near, far);
 }
+
+glm::mat4 TDW::Camera::getProjectionMatrix() const {
+    return projectionMatrix;
+}
+
+

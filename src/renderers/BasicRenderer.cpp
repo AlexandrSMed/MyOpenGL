@@ -142,8 +142,8 @@ void TDW::BasicRenderer::draw(GLFWwindow*, const Camera& camera) {
     glBindVertexArray(vertexAO);
     switchTexture();
     slowboatTranformations();
-    attachMatrix(shaderProgram, "projectionMatrix", camera.projectionMatrix());
-    attachMatrix(shaderProgram, "viewMatrix", camera.viewMatrix());
+    attachMatrix(shaderProgram, "projectionMatrix", camera.getProjectionMatrix());
+    attachMatrix(shaderProgram, "viewMatrix", camera.makeViewMatrix());
     attachMatrix(shaderProgram, "modelMatrix", modelMatrix);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_BYTE, nullptr);
 }

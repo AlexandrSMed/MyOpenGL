@@ -36,8 +36,8 @@ TDW::StaticRenderer::StaticRenderer(size_t count, unsigned radius) {
 void TDW::StaticRenderer::draw(GLFWwindow*, const Camera& camera) {
     glUseProgram(shaderProgram);
     glBindVertexArray(vertexAO);
-    attachMatrix(shaderProgram, "projectionMatrix", camera.projectionMatrix());
-    attachMatrix(shaderProgram, "viewMatrix", camera.viewMatrix());
+    attachMatrix(shaderProgram, "projectionMatrix", camera.getProjectionMatrix());
+    attachMatrix(shaderProgram, "viewMatrix", camera.makeViewMatrix());
 
     for (auto& element : modelMatrices) {
         attachMatrix(shaderProgram, "modelMatrix", element.first);
