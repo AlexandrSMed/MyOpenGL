@@ -15,7 +15,7 @@ namespace TDW {
     protected:
         GLuint loadShader(GLenum type, const char* source);
         GLuint linkProgram(const std::vector<GLuint>& shaders, bool deleteShaders = true);
-        void enableVertexAttribute(GLuint program, std::string name, size_t size, size_t stride = 0, int offset = 0);
+        void enableVertexAttribute(GLuint program, std::string name, GLsizei size, GLsizei stride = 0, int offset = 0);
         void disableVertexAttribute(GLuint program, std::string name);
         void attachMatrix(GLuint program, std::string name, const glm::mat4& matrix);
         GLuint setVertices(const std::vector<float>& verticesData, const std::vector<GLubyte>& indices);

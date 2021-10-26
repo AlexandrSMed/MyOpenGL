@@ -17,8 +17,8 @@ void TDW::BasicRenderer::switchTexture() {
         if (textureTransitionAlpha < 1) {
             glUniform1f(colorAlphaLocation, textureTransitionAlpha);
         } else {
-            auto indexIterator = [this] (unsigned index) -> unsigned {
-                if (index == textureStack.size() - 1) {
+            auto indexIterator = [this] (GLint index) -> GLint {
+                if (index == static_cast<GLint>(textureStack.size() - 1)) {
                     return 0;
                 } else {
                     return index + 1;
@@ -120,7 +120,7 @@ void TDW::BasicRenderer::contextDidLoad(GLFWwindow*, const Camera&, int width, i
         8,	9,	11,		8,	10,	11,
         1,	5,	10,		5,	11,	10
     });
-    auto stride = sizeof(float) * 5;
+    GLsizei stride = sizeof(float) * 5;
     enableVertexAttribute(shaderProgram, "aPos", 3, stride, 0);
     enableVertexAttribute(shaderProgram, "aTextCoord", 2, stride, sizeof(float) * 3);
 

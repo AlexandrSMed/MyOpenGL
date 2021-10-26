@@ -11,6 +11,7 @@
             "buildCommandArgs": "-v",
             "ctestCommandArgs": "",
             "enableClangTidyCodeAnalysis": true,
+            "enableMicrosoftCodeAnalysis": true,
             "intelliSenseMode": "windows-clang-x64"
         }
     ]

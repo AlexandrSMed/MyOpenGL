@@ -10,7 +10,9 @@ namespace TDW {
     public:
         BasicRenderer(std::vector<std::string> aTextureStack = {
             "assets/texture_austmar.jpg", "assets/texture_gantas.jpg", "assets/texture_harrison.jpg"
-            }) : textureStack(aTextureStack), modelMatrix(1), projectionMatrix(1) {
+            }) : textureStack(aTextureStack), activeTextureIndex(0), textureSwitchDeltaTime(0), textureSwitching(false),
+            textureTransitionAlpha(0), lastXMousePos(0), lastYMousePos(0), vertexAO(0), shaderProgram(0), modelMatrix(1),
+            projectionMatrix(1) {
             modelMatrix = glm::translate(modelMatrix, glm::vec3(0, 0.8, 0));
         }
 
@@ -22,10 +24,10 @@ namespace TDW {
         ~BasicRenderer() override;
     private:
         std::vector<std::string> textureStack;
-        unsigned activeTextureIndex = 0;
+        GLint activeTextureIndex;
         double textureSwitchDeltaTime;
-        bool textureSwitching = false;
-        float textureTransitionAlpha = 0;
+        bool textureSwitching;
+        float textureTransitionAlpha;
 
         double lastXMousePos;
         double lastYMousePos;

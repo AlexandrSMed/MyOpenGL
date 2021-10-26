@@ -7,7 +7,7 @@
 #include "StaticShaders.h"
 #include "StaticRenderer.h"
 
-TDW::StaticRenderer::StaticRenderer(size_t count, unsigned radius) {
+TDW::StaticRenderer::StaticRenderer(size_t count, unsigned radius) : vertexAO(0), shaderProgram(0)  {
 
     std::generate_n(std::back_inserter(modelMatrices), count, [radius] {
         glm::mat4 modelMatrix(1.0f);
@@ -69,7 +69,7 @@ void TDW::StaticRenderer::contextDidLoad(GLFWwindow*, const Camera&, int, int) {
         1, 0, 3,
         2, 0, 3
     });
-    auto stride = sizeof(float) * 4;
+    GLsizei stride = sizeof(float) * 4;
     enableVertexAttribute(shaderProgram, "aPos", 3, stride, 0);
     enableVertexAttribute(shaderProgram, "aColorFactor", 1, stride, sizeof(float) * 3);
 }

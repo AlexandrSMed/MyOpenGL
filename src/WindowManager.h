@@ -24,8 +24,8 @@ namespace TDW {
         ~WindowManager();
     private:
         Camera camera;
-        std::vector<Renderer*> renderers;
         double lastXMousePos;
+        std::vector<Renderer*> renderers;
 
         void keyDidSendAction(GLFWwindow* window, int key, int action);
         void windowDidResize(GLFWwindow* window, int width, int height);

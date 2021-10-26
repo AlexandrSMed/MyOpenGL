@@ -60,9 +60,13 @@ void TDW::Renderer::disableVertexAttribute(GLuint program, std::string name) {
     glDisableVertexAttribArray(location);
 }
 
-void TDW::Renderer::enableVertexAttribute(GLuint program, std::string name, size_t size, size_t stride, int offset) {
+void TDW::Renderer::enableVertexAttribute(GLuint program, std::string name, GLsizei size, GLsizei stride, int offset) {
     auto location = glGetAttribLocation(program, name.c_str());
-    glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void *>(offset));
+
+    // A dirty trick to supress C4312
+    char* offsetData = nullptr;
+    offsetData += offset;
+    glVertexAttribPointer(location, size, GL_FLOAT, GL_FALSE, stride, reinterpret_cast<void*>(offsetData));
     glEnableVertexAttribArray(location);
 }
 

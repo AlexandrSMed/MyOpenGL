@@ -1,5 +1,5 @@
 #CMakeLists.txt
-cmake_minimum_required (VERSION 3.12)
+cmake_minimum_required (VERSION 3.15)
 
 set(PROJ_NAME MyOpenGL)
 project(${PROJ_NAME})
@@ -40,8 +40,8 @@ add_dependencies(${PROJ_NAME} copy_assets)
 # =======================================================#
 # Compiler Settings
 # =======================================================#
-target_compile_options(${PROJ_NAME} PRIVATE -Wall -Wno-missing-prototypes -DLOG
-    $<$<CXX_COMPILER_ID:MSVC>:-Zc:__cplusplus>
-    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-c++98-compat>
+target_compile_options(${PROJ_NAME} PRIVATE  -DLOG
+    $<$<CXX_COMPILER_ID:MSVC>:-Zc:__cplusplus -W4>
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wno-c++98-compat -Wno-missing-prototypes>
 )
 target_include_directories(${PROJ_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/src/")

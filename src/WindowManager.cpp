@@ -39,7 +39,7 @@ void TDW::WindowManager::keyDidSendAction(GLFWwindow* window, int key, int actio
 
 #pragma endregion
 
-TDW::WindowManager::WindowManager() {
+TDW::WindowManager::WindowManager() : camera(), lastXMousePos(0), renderers() {
     camera.cameraUpDirection = glm::vec3(0, 1, 0);
     camera.cameraLookAt = glm::vec3(0);
     camera.cameraPosition = glm::vec3(4);
@@ -87,8 +87,11 @@ GLFWwindow* TDW::WindowManager::presentWindow(int width, int height, std::string
 }
 
 bool TDW::WindowManager::initGLAD() {
+    #pragma warning(suppress : 4191)
     auto loadProc = reinterpret_cast<GLADloadproc>(glfwGetProcAddress);
-    return gladLoadGLLoader(loadProc);
+
+    // Equality with zero supresses MSVC warning C4800
+    return gladLoadGLLoader(loadProc) != 0;
 }
 
 void TDW::WindowManager::runWindowLoop(GLFWwindow* window) {
